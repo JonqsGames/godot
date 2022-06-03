@@ -3219,9 +3219,9 @@ void RendererSceneCull::_render_scene(const RendererSceneRender::CameraData *p_c
 	if (p_viewport.is_valid()) {
 		occluders_tex = RSG::viewport->viewport_get_occluder_debug_texture(p_viewport);
 	}
-
+	bool active_tonemap = !RSG::viewport->viewport_get_is_sub_vp(p_viewport);
 	RENDER_TIMESTAMP("Render 3D Scene");
-	scene_render->render_scene(p_render_buffers, p_camera_data, scene_cull_result.geometry_instances, scene_cull_result.light_instances, scene_cull_result.reflections, scene_cull_result.voxel_gi_instances, scene_cull_result.decals, scene_cull_result.lightmaps, scene_cull_result.fog_volumes, p_environment, camera_effects, p_shadow_atlas, occluders_tex, p_reflection_probe.is_valid() ? RID() : scenario->reflection_atlas, p_reflection_probe, p_reflection_probe_pass, p_screen_mesh_lod_threshold, render_shadow_data, max_shadows_used, render_sdfgi_data, cull.sdfgi.region_count, &sdfgi_update_data, r_render_info);
+	scene_render->render_scene(p_render_buffers, p_camera_data, scene_cull_result.geometry_instances, scene_cull_result.light_instances, scene_cull_result.reflections, scene_cull_result.voxel_gi_instances, scene_cull_result.decals, scene_cull_result.lightmaps, scene_cull_result.fog_volumes, p_environment, camera_effects, p_shadow_atlas, occluders_tex, p_reflection_probe.is_valid() ? RID() : scenario->reflection_atlas, p_reflection_probe, p_reflection_probe_pass, p_screen_mesh_lod_threshold, render_shadow_data, max_shadows_used, render_sdfgi_data, cull.sdfgi.region_count, active_tonemap, &sdfgi_update_data, r_render_info);
 
 	for (uint32_t i = 0; i < max_shadows_used; i++) {
 		render_shadow_data[i].instances.clear();

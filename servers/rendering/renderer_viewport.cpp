@@ -712,10 +712,29 @@ void RendererViewport::viewport_initialize(RID p_rid) {
 	Viewport *viewport = viewport_owner.get_or_null(p_rid);
 	viewport->self = p_rid;
 	viewport->render_target = RSG::texture_storage->render_target_create();
+	RSG::texture_storage->render_target_set_is_sub_vp(viewport->render_target, true);
 	viewport->shadow_atlas = RSG::scene->shadow_atlas_create();
 	viewport->viewport_render_direct_to_screen = false;
 
 	viewport->fsr_enabled = !RSG::rasterizer->is_low_end() && !viewport->disable_3d;
+}
+void RendererViewport::viewport_set_is_sub_vp(RID p_viewport, bool is_sub_vp) {
+	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+	ERR_FAIL_COND(!viewport);
+
+	if (viewport->is_sub_vp == is_sub_vp) {
+		return;
+	}
+
+	viewport->is_sub_vp = is_sub_vp;
+	RSG::texture_storage->render_target_set_is_sub_vp(viewport->render_target, is_sub_vp);
+	// viewport->render_target = RSG::texture_storage->render_target_create();
+	_configure_3d_render_buffers(viewport);
+}
+bool RendererViewport::viewport_get_is_sub_vp(RID p_viewport) const {
+	const Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+	// ERR_FAIL_COND(!viewport);
+	return viewport->is_sub_vp;
 }
 
 void RendererViewport::viewport_set_use_xr(RID p_viewport, bool p_use_xr) {

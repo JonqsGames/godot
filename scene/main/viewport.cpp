@@ -3541,7 +3541,11 @@ void Viewport::_propagate_exit_world_3d(Node *p_node) {
 		_propagate_exit_world_3d(p_node->get_child(i));
 	}
 }
+void Viewport::set_is_sub_vp(bool is_sub_vp) {
+	is_sub_vp = is_sub_vp;
 
+	RS::get_singleton()->viewport_set_is_sub_vp(viewport, is_sub_vp);
+}
 void Viewport::set_use_xr(bool p_use_xr) {
 	use_xr = p_use_xr;
 
@@ -4071,6 +4075,8 @@ void SubViewport::_bind_methods() {
 	BIND_ENUM_CONSTANT(UPDATE_ALWAYS);
 }
 
-SubViewport::SubViewport() {}
+SubViewport::SubViewport() {
+	this->set_is_sub_vp(true);
+}
 
 SubViewport::~SubViewport() {}

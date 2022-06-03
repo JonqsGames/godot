@@ -1325,6 +1325,15 @@ void TextureStorage::render_target_free(RID p_rid) {
 	render_target_owner.free(p_rid);
 }
 
+void TextureStorage::render_target_set_is_sub_vp(RID p_render_target, bool is_sub_vp) {
+	// RenderTarget *rt = render_target_owner.get_or_null(p_render_target);
+	// ERR_FAIL_COND(!rt);
+	// if(rt->is_sub_vp != is_sub_vp) {
+	// 	rt->is_sub_vp = is_sub_vp;
+	// 	_update_render_target(rt);
+	// }
+}
+
 void TextureStorage::render_target_set_position(RID p_render_target, int p_x, int p_y) {
 	RenderTarget *rt = render_target_owner.get_or_null(p_render_target);
 	ERR_FAIL_COND(!rt);

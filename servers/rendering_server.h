@@ -787,6 +787,7 @@ public:
 		VIEWPORT_SCALING_3D_MODE_MAX
 	};
 
+	virtual void viewport_set_is_sub_vp(RID p_viewport, bool is_sub_vp) = 0;
 	virtual void viewport_set_use_xr(RID p_viewport, bool p_use_xr) = 0;
 	virtual void viewport_set_size(RID p_viewport, int p_width, int p_height) = 0;
 	virtual void viewport_set_active(RID p_viewport, bool p_active) = 0;
@@ -1009,7 +1010,8 @@ public:
 		ENV_TONE_MAPPER_LINEAR,
 		ENV_TONE_MAPPER_REINHARD,
 		ENV_TONE_MAPPER_FILMIC,
-		ENV_TONE_MAPPER_ACES
+		ENV_TONE_MAPPER_ACES,
+		ENV_TONE_MAPPER_NONE
 	};
 
 	virtual void environment_set_tonemap(RID p_env, EnvironmentToneMapper p_tone_mapper, float p_exposure, float p_white, bool p_auto_exposure, float p_min_luminance, float p_max_luminance, float p_auto_exp_speed, float p_auto_exp_grey) = 0;

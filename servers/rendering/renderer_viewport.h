@@ -59,6 +59,7 @@ public:
 		float fsr_sharpness = 0.2f;
 		float fsr_mipmap_bias = 0.0f;
 		bool fsr_enabled;
+		bool is_sub_vp = false;
 		RS::ViewportUpdateMode update_mode;
 		RID render_target;
 		RID render_target_texture;
@@ -210,6 +211,8 @@ public:
 	RID viewport_allocate();
 	void viewport_initialize(RID p_rid);
 
+	void viewport_set_is_sub_vp(RID p_viewport, bool is_sub_vp);
+	bool viewport_get_is_sub_vp(RID p_viewport) const;
 	void viewport_set_use_xr(RID p_viewport, bool p_use_xr);
 
 	void viewport_set_size(RID p_viewport, int p_width, int p_height);

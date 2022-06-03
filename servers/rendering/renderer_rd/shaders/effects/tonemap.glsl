@@ -255,11 +255,12 @@ vec3 linear_to_srgb(vec3 color) {
 #define TONEMAPPER_REINHARD 1
 #define TONEMAPPER_FILMIC 2
 #define TONEMAPPER_ACES 3
+#define TONEMAPPER_NONE 4
 
 vec3 apply_tonemapping(vec3 color, float white) { // inputs are LINEAR, always outputs clamped [0;1] color
 	// Ensure color values passed to tonemappers are positive.
 	// They can be negative in the case of negative lights, which leads to undesired behavior.
-	if (params.tonemapper == TONEMAPPER_LINEAR) {
+	if (params.tonemapper == TONEMAPPER_LINEAR || params.tonemapper == TONEMAPPER_NONE) {
 		return color;
 	} else if (params.tonemapper == TONEMAPPER_REINHARD) {
 		return tonemap_reinhard(max(vec3(0.0f), color), white);
@@ -466,10 +467,11 @@ void main() {
 		// Otherwise, we're adding noise to an already-quantized image.
 		color.rgb += screen_space_dither(gl_FragCoord.xy);
 	}
-
-	color.rgb = apply_tonemapping(color.rgb, params.white);
-
-	color.rgb = linear_to_srgb(color.rgb); // regular linear -> SRGB conversion
+	
+	if(params.tonemapper != TONEMAPPER_NONE) {
+		color.rgb = apply_tonemapping(color.rgb, params.white);
+		color.rgb = linear_to_srgb(color.rgb); // regular linear -> SRGB conversion
+	}
 
 #ifndef SUBPASS
 	// Glow

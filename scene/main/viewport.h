@@ -89,6 +89,7 @@ class Viewport : public Node {
 	GDCLASS(Viewport, Node);
 
 public:
+
 	enum Scaling3DMode {
 		SCALING_3D_MODE_BILINEAR,
 		SCALING_3D_MODE_FSR,
@@ -465,6 +466,8 @@ protected:
 	static void _bind_methods();
 
 public:
+
+	bool is_sub_vp = false;
 	uint64_t get_processed_events_count() const { return event_count; }
 
 	AudioListener2D *get_audio_listener_2d() const;
@@ -680,7 +683,7 @@ public:
 	bool is_using_own_world_3d() const;
 	void _propagate_enter_world_3d(Node *p_node);
 	void _propagate_exit_world_3d(Node *p_node);
-
+	void set_is_sub_vp(bool is_sub_vp);
 	void set_use_xr(bool p_use_xr);
 	bool is_using_xr();
 #endif // _3D_DISABLED

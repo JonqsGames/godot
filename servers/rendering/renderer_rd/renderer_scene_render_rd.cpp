@@ -2567,6 +2567,9 @@ void RendererSceneRenderRD::_render_buffers_post_process_and_tonemap(const Rende
 			tonemap.white = env->white;
 			tonemap.exposure = env->exposure;
 		}
+		if(!p_render_data->use_tonemap) {
+			tonemap.tonemap_mode = RS::ENV_TONE_MAPPER_NONE;
+		}
 
 		if (camfx && camfx->override_exposure_enabled) {
 			tonemap.exposure = camfx->override_exposure;
@@ -5037,7 +5040,7 @@ void RendererSceneRenderRD::_pre_opaque_render(RenderDataRD *p_render_data, bool
 	}
 }
 
-void RendererSceneRenderRD::render_scene(RID p_render_buffers, const CameraData *p_camera_data, const PagedArray<GeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, const PagedArray<RID> &p_fog_volumes, RID p_environment, RID p_camera_effects, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data, RendererScene::RenderInfo *r_render_info) {
+void RendererSceneRenderRD::render_scene(RID p_render_buffers, const CameraData *p_camera_data, const PagedArray<GeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, const PagedArray<RID> &p_fog_volumes, RID p_environment, RID p_camera_effects, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const bool use_tonemap, const RenderSDFGIUpdateData *p_sdfgi_update_data, RendererScene::RenderInfo *r_render_info) {
 	RendererRD::TextureStorage *texture_storage = RendererRD::TextureStorage::get_singleton();
 
 	// getting this here now so we can direct call a bunch of things more easily
@@ -5096,6 +5099,7 @@ void RendererSceneRenderRD::render_scene(RID p_render_buffers, const CameraData 
 		render_state.render_sdfgi_region_count = p_render_sdfgi_region_count;
 		render_state.sdfgi_update_data = p_sdfgi_update_data;
 		render_data.render_info = r_render_info;
+		render_data.use_tonemap = use_tonemap;
 	}
 
 	PagedArray<RID> empty;
@@ -5169,7 +5173,6 @@ void RendererSceneRenderRD::render_scene(RID p_render_buffers, const CameraData 
 		render_data.cluster_size = current_cluster_builder->get_cluster_size();
 		render_data.cluster_max_elements = current_cluster_builder->get_max_cluster_elements();
 	}
-
 	_render_scene(&render_data, clear_color);
 
 	if (p_render_buffers.is_valid()) {

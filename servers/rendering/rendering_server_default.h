@@ -572,6 +572,7 @@ public:
 
 	FUNCRIDSPLIT(viewport)
 
+	FUNC2(viewport_set_is_sub_vp, RID, bool)
 	FUNC2(viewport_set_use_xr, RID, bool)
 	FUNC3(viewport_set_size, RID, int, int)
 

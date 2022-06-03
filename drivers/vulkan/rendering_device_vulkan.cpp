@@ -1964,7 +1964,6 @@ RID RenderingDeviceVulkan::texture_create(const TextureFormat &p_format, const T
 	} else {
 		image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	}
-
 	err = vkCreateImageView(device, &image_view_create_info, nullptr, &texture.view);
 
 	if (err) {

@@ -2172,6 +2172,7 @@ void RenderingServer::_bind_methods() {
 	/* VIEWPORT */
 
 	ClassDB::bind_method(D_METHOD("viewport_create"), &RenderingServer::viewport_create);
+	ClassDB::bind_method(D_METHOD("viewport_set_is_sub_vp", "viewport", "is_sub_vp"), &RenderingServer::viewport_set_is_sub_vp);
 	ClassDB::bind_method(D_METHOD("viewport_set_use_xr", "viewport", "use_xr"), &RenderingServer::viewport_set_use_xr);
 	ClassDB::bind_method(D_METHOD("viewport_set_size", "viewport", "width", "height"), &RenderingServer::viewport_set_size);
 	ClassDB::bind_method(D_METHOD("viewport_set_active", "viewport", "active"), &RenderingServer::viewport_set_active);

@@ -610,7 +610,6 @@ void TextureStorage::texture_2d_initialize(RID p_texture, const Ref<Image> &p_im
 	Texture texture;
 
 	texture.type = Texture::TYPE_2D;
-
 	texture.width = p_image->get_width();
 	texture.height = p_image->get_height();
 	texture.layers = 1;
@@ -782,7 +781,6 @@ void TextureStorage::texture_2d_layered_initialize(RID p_texture, const Vector<R
 
 void TextureStorage::texture_3d_initialize(RID p_texture, Image::Format p_format, int p_width, int p_height, int p_depth, bool p_mipmaps, const Vector<Ref<Image>> &p_data) {
 	ERR_FAIL_COND(p_data.size() == 0);
-
 	Image::Image3DValidateError verr = Image::validate_3d_image(p_format, p_width, p_height, p_depth, p_mipmaps, p_data);
 	if (verr != Image::VALIDATE_3D_OK) {
 		ERR_FAIL_MSG(Image::get_3d_image_validation_error_text(verr));
@@ -898,6 +896,7 @@ void TextureStorage::texture_3d_initialize(RID p_texture, Image::Format p_format
 }
 
 void TextureStorage::texture_proxy_initialize(RID p_texture, RID p_base) {
+
 	Texture *tex = texture_owner.get_or_null(p_base);
 	ERR_FAIL_COND(!tex);
 	Texture proxy_tex = *tex;
@@ -1084,7 +1083,8 @@ Ref<Image> TextureStorage::texture_2d_get(RID p_texture) const {
 	ERR_FAIL_COND_V(data.size() == 0, Ref<Image>());
 	Ref<Image> image;
 	image.instantiate();
-	image->create(tex->width, tex->height, tex->mipmaps > 1, tex->validated_format, data);
+	image->create(tex->width, tex->height, tex->mipmaps > 1, tex->format, data);
+	// image->create(tex->width, tex->height, tex->mipmaps > 1, tex->format, data);
 	ERR_FAIL_COND_V(image->is_empty(), Ref<Image>());
 	if (tex->format != tex->validated_format) {
 		image->convert(tex->format);
@@ -2072,11 +2072,22 @@ void TextureStorage::_update_render_target(RenderTarget *rt) {
 	if (rt->size.width == 0 || rt->size.height == 0) {
 		return;
 	}
-	//until we implement support for HDR monitors (and render target is attached to screen), this is enough.
-	rt->color_format = RD::DATA_FORMAT_R8G8B8A8_UNORM;
-	rt->color_format_srgb = RD::DATA_FORMAT_R8G8B8A8_SRGB;
-	rt->image_format = rt->is_transparent ? Image::FORMAT_RGBA8 : Image::FORMAT_RGB8;
 
+	//until we implement support for HDR monitors (and render target is attached to screen), this is enough.
+	if(!rt->is_sub_vp) {
+		rt->color_format = RD::DATA_FORMAT_R8G8B8A8_UNORM;
+		rt->color_format_srgb = RD::DATA_FORMAT_R8G8B8A8_SRGB;
+		rt->image_format = rt->is_transparent ? Image::FORMAT_RGBA8 : Image::FORMAT_RGB8;
+	}else {
+		
+		rt->color_format = RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
+		rt->color_format_srgb = RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
+		rt->image_format = rt->is_transparent ? Image::FORMAT_RGBAH : Image::FORMAT_RGBAH;
+		//rd_view.format_override = RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
+		//rt->color_format = RD::DATA_FORMAT_R16G16B16A16_SFLOAT; // This is the one that need to change
+		// rt->color_format_srgb = RD::DATA_FORMAT_R32G32B32_SFLOAT;
+		//rt->image_format = rt->is_transparent ? Image::FORMAT_RGBA4444 : Image::FORMAT_RGBA4444;
+	}
 	RD::TextureFormat rd_format;
 	RD::TextureView rd_view;
 	{ //attempt register
@@ -2096,6 +2107,9 @@ void TextureStorage::_update_render_target(RenderTarget *rt) {
 		rd_format.shareable_formats.push_back(rt->color_format);
 		rd_format.shareable_formats.push_back(rt->color_format_srgb);
 	}
+	// if(rt->is_sub_vp){
+	// 	rd_view.format_override = RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
+	// }
 
 	rt->color = RD::get_singleton()->texture_create(rd_format, rd_view);
 	ERR_FAIL_COND(rt->color.is_null());
@@ -2190,7 +2204,7 @@ void TextureStorage::_create_render_target_backbuffer(RenderTarget *rt) {
 
 RID TextureStorage::render_target_create() {
 	RenderTarget render_target;
-
+	render_target.is_sub_vp = false;
 	render_target.was_used = false;
 	render_target.clear_requested = false;
 
@@ -2214,6 +2228,14 @@ void TextureStorage::render_target_free(RID p_rid) {
 
 void TextureStorage::render_target_set_position(RID p_render_target, int p_x, int p_y) {
 	//unused for this render target
+}
+void TextureStorage::render_target_set_is_sub_vp(RID p_render_target, bool is_sub_vp) {
+	RenderTarget *rt = render_target_owner.get_or_null(p_render_target);
+	ERR_FAIL_COND(!rt);
+	if(rt->is_sub_vp != is_sub_vp) {
+		rt->is_sub_vp = is_sub_vp;
+		_update_render_target(rt);
+	}
 }
 
 void TextureStorage::render_target_set_size(RID p_render_target, int p_width, int p_height, uint32_t p_view_count) {
