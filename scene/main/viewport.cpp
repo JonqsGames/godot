@@ -991,6 +991,16 @@ bool Viewport::has_transparent_background() const {
 	return transparent_bg;
 }
 
+void Viewport::set_keep_linear(bool p_keep_linear) {
+	keep_linear = p_keep_linear;
+	RS::get_singleton()->viewport_set_keep_linear(viewport, p_keep_linear);
+	notify_property_list_changed();
+}
+
+bool Viewport::is_keeping_linear() const{
+	return keep_linear;
+}
+
 void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 	if (world_2d == p_world_2d) {
 		return;
@@ -3774,6 +3784,9 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_transparent_background", "enable"), &Viewport::set_transparent_background);
 	ClassDB::bind_method(D_METHOD("has_transparent_background"), &Viewport::has_transparent_background);
 
+	ClassDB::bind_method(D_METHOD("set_keep_linear", "enable"), &Viewport::set_keep_linear);
+	ClassDB::bind_method(D_METHOD("is_keeping_linear"), &Viewport::is_keeping_linear);
+
 	ClassDB::bind_method(D_METHOD("set_msaa_2d", "msaa"), &Viewport::set_msaa_2d);
 	ClassDB::bind_method(D_METHOD("get_msaa_2d"), &Viewport::get_msaa_2d);
 
@@ -3920,6 +3933,7 @@ void Viewport::_bind_methods() {
 #endif // _3D_DISABLED
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "world_2d", PROPERTY_HINT_RESOURCE_TYPE, "World2D", PROPERTY_USAGE_NONE), "set_world_2d", "get_world_2d");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "transparent_bg"), "set_transparent_background", "has_transparent_background");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "keep_linear"), "set_keep_linear", "is_keeping_linear");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "handle_input_locally"), "set_handle_input_locally", "is_handling_input_locally");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "snap_2d_transforms_to_pixel"), "set_snap_2d_transforms_to_pixel", "is_snap_2d_transforms_to_pixel_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "snap_2d_vertices_to_pixel"), "set_snap_2d_vertices_to_pixel", "is_snap_2d_vertices_to_pixel_enabled");

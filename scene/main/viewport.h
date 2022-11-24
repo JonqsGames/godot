@@ -239,6 +239,7 @@ private:
 	Rect2 last_vp_rect;
 
 	bool transparent_bg = false;
+	bool keep_linear = false;
 	bool gen_mipmaps = false;
 
 	bool snap_controls_to_pixels = true;
@@ -517,6 +518,9 @@ public:
 
 	void set_transparent_background(bool p_enable);
 	bool has_transparent_background() const;
+
+	void set_keep_linear(bool p_keep_linear);
+	bool is_keeping_linear() const;
 
 	Ref<ViewportTexture> get_texture() const;
 

@@ -900,6 +900,7 @@ public:
 	virtual void viewport_set_use_taa(RID p_viewport, bool p_use_taa) = 0;
 
 	virtual void viewport_set_use_debanding(RID p_viewport, bool p_use_debanding) = 0;
+	virtual void viewport_set_keep_linear(RID p_viewport, bool p_keep_linear) = 0;
 
 	virtual void viewport_set_mesh_lod_threshold(RID p_viewport, float p_pixels) = 0;
 

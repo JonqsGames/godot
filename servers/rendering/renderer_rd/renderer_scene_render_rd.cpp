@@ -666,6 +666,7 @@ void RendererSceneRenderRD::_render_buffers_post_process_and_tonemap(const Rende
 		}
 
 		tonemap.use_debanding = rb->get_use_debanding();
+		tonemap.keep_linear = rb->get_keep_linear();
 		tonemap.texture_size = Vector2i(rb->get_internal_size().x, rb->get_internal_size().y);
 
 		if (p_render_data->environment.is_valid()) {

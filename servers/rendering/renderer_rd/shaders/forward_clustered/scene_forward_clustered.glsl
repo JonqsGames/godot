@@ -2149,9 +2149,6 @@ void fragment_shader(in SceneData scene_data) {
 	specular_buffer = vec4(specular_light, metallic);
 #endif
 
-	diffuse_buffer.rgb = mix(diffuse_buffer.rgb, fog.rgb, fog.a);
-	specular_buffer.rgb = mix(specular_buffer.rgb, vec3(0.0), fog.a);
-
 #else //MODE_SEPARATE_SPECULAR
 
 #ifdef MODE_UNSHADED
@@ -2162,8 +2159,9 @@ void fragment_shader(in SceneData scene_data) {
 #endif //USE_NO_SHADING
 
 	// Draw "fixed" fog before volumetric fog to ensure volumetric fog can appear in front of the sky.
-	frag_color.rgb = mix(frag_color.rgb, fog.rgb, fog.a);
-
+	if (frag_color.b == 0.0) {
+		frag_color.b = clamp(fog.a,0.0,1.0);
+	}
 #endif //MODE_SEPARATE_SPECULAR
 
 #endif //MODE_RENDER_DEPTH
