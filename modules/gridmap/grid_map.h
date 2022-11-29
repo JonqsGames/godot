@@ -86,6 +86,7 @@ class GridMap : public Node3D {
 			unsigned int item : 16;
 			unsigned int rot : 5;
 			unsigned int layer : 8;
+			Color color;
 		};
 		uint32_t cell = 0;
 	};
@@ -274,6 +275,7 @@ public:
 	bool get_center_z() const;
 
 	void set_cell_item(const Vector3i &p_position, int p_item, int p_rot = 0);
+	void set_cell_item_custom_data(const Vector3i &p_position, const Color &p_custom_data);
 	int get_cell_item(const Vector3i &p_position) const;
 	int get_cell_item_orientation(const Vector3i &p_position) const;
 	Basis get_cell_item_basis(const Vector3i &p_position) const;
