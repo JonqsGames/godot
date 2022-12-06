@@ -480,6 +480,7 @@ public:
 					singleton->_instance_queue_update(instance, true, false);
 
 				} break;
+				case Dependency::DEPENDENCY_CHANGED_MULTIMESH_VISIBLE_INSTANCES:
 				case Dependency::DEPENDENCY_CHANGED_MATERIAL: {
 					singleton->_instance_queue_update(instance, false, true);
 				} break;
@@ -491,7 +492,6 @@ public:
 				case Dependency::DEPENDENCY_CHANGED_REFLECTION_PROBE: {
 					singleton->_instance_queue_update(instance, true, true);
 				} break;
-				case Dependency::DEPENDENCY_CHANGED_MULTIMESH_VISIBLE_INSTANCES:
 				case Dependency::DEPENDENCY_CHANGED_SKELETON_BONES: {
 					//ignored
 				} break;

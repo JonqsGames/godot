@@ -2457,6 +2457,7 @@ static void _register_variant_builtin_methods() {
 	bind_method(PackedVector3Array, find, sarray("value", "from"), varray(0));
 	bind_method(PackedVector3Array, rfind, sarray("value", "from"), varray(-1));
 	bind_method(PackedVector3Array, count, sarray("value"), varray());
+	bind_method(PackedVector3Array, shuffle, sarray("stride"), varray());
 
 	/* Color Array */
 

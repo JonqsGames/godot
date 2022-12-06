@@ -78,6 +78,7 @@ public:
 		}
 	}
 	void reverse();
+	void shuffle(int stride);
 
 	_FORCE_INLINE_ T *ptrw() { return _cowdata.ptrw(); }
 	_FORCE_INLINE_ const T *ptr() const { return _cowdata.ptr(); }
@@ -292,6 +293,21 @@ void Vector<T>::reverse() {
 	for (int i = 0; i < size() / 2; i++) {
 		T *p = ptrw();
 		SWAP(p[i], p[size() - i - 1]);
+	}
+}
+template <class T>
+void Vector<T>::shuffle(int stride) {
+	if(size() < 2) {
+		return;
+	}
+	for (int i = 0; i < (size() / 2) / stride; i++) {
+		T *p = ptrw();
+		int dest = Math::rand() % (size() - (i * stride));
+		dest -= dest % 4;
+		dest += i * stride;
+		for(int j = 0; j < stride; j++) {
+			SWAP(p[(i*stride) + j], p[dest + j]);
+		}
 	}
 }
 
